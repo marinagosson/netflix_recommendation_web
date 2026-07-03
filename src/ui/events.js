@@ -7,18 +7,7 @@ import { getSelectedUser } from "./userSelect.js";
 export function registerEvents(model, context) {
     console.log("registrando eventos...")
 
-    const button = document.getElementById("recommendButton")
     const select = document.getElementById("usersSelect")
-
-    button.addEventListener("click", () => {  
-        const user = getSelectedUser(context)
-
-        generateRecommendations(
-            user.id,
-            model,
-            context,
-        )
-    })
 
     select.addEventListener("change", () => {
         const user = getSelectedUser(context);
