@@ -34,56 +34,71 @@ async function init() {
     const application =document.getElementById("application");
     application.style.display = "none";
 
-    updateStatus("⏳","Carregando dados...")
+    updateStatus("📥", "Carregando datasets...");
 
-    // passo 1: obter o data
+    // passo 1
     const movies = await loadMovies();
     const users = await loadUsers();
     const history = await loadHistory();
 
-    // passo 2: montar o contexto
-    // prepara os dados para o restante da aplicacao consiga usar e acessar de forma rapida
-    // centraliza todos os relacionamentos, estatisticas e indices necessarios para proximas
-    // etapas nao recalcular essas informacoes
+    updateStatus("🧩", "Construindo contexto da aplicação...");
+
+    // passo 2
     const context = makeContext(
         movies,
         users,
         history
     );
-        
-    updateStatus("⚙️","Gerando vetores...")
 
-    renderUsers(context.usersWithHistory) 
+    renderUsers(context.usersWithHistory);
 
     const selectedUser = getSelectedUser(context);
 
     renderWatchedMovies(selectedUser);
 
-    // passo 3: codificacao dos filmes transformando em vetores
-    buildMoviesVector(context)
+    updateStatus("🎬", "Gerando vetores dos filmes...");
 
-    // passo 4: condificacao os usuarios transformando em vetores
-    buildUsersVector(context) 
+    // passo 3
+    buildMoviesVector(context);
 
-    _globalCtx = context
+    updateStatus("👤", "Gerando vetores dos usuários...");
 
-    updateStatus("🧠", "Treinando rede neural...");
-    
-    // passo 5: gerar os dados de treinamento
+    // passo 4
+    buildUsersVector(context);
+
+    _globalCtx = context;
+
+    updateStatus("📊", "Criando conjunto de treinamento...");
+
+    // passo 5
     const trainData = createTrainingData(context);
 
-    // passo 6: criar rede neural e treinar os modelos
-    const model = await configureNeuralNetAndTrain(trainData)
+    updateStatus("🧠", "Treinando rede neural...");
 
-    generateRecommendations(selectedUser.id, model, context, 10)
+    // passo 6
+    const model = await configureNeuralNetAndTrain(trainData);
+
+    updateStatus("✨", "Gerando recomendações iniciais...");
+
+    // passo 7
+    generateRecommendations(
+        selectedUser.id,
+        model,
+        context,
+        10
+    );
 
     registerEvents(
         model,
         context
     );
 
-    updateStatus("✅", "Modelo treinado.", true);
-    
+    updateStatus(
+        "✅",
+        "Sistema inicializado com sucesso.",
+        true
+    );
+
     application.style.display = "block";
     
 }
