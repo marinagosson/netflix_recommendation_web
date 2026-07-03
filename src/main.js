@@ -34,10 +34,6 @@ async function init() {
     const application =document.getElementById("application");
     application.style.display = "none";
 
-    const button = document.getElementById("recommendButton");
-    button.disabled = true;
-    button.textContent = "Treinando modelo...";
-    
     updateStatus("⏳","Carregando dados...")
 
     // passo 1: obter o data
@@ -80,9 +76,6 @@ async function init() {
     const model = await configureNeuralNetAndTrain(trainData)
 
     generateRecommendations(selectedUser.id, model, context, 10)
-
-    button.disabled = false;
-    button.textContent = "Gerar Recomendações";
 
     registerEvents(
         model,
